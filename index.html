@@ -832,62 +832,69 @@ Use a ${tone} tone throughout and ensure each section is detailed and valuable. 
     </style>
 </body>
 </html>
-// Secure API Integration
-class SecureAIProvider {
-    constructor() {
-        this.apiKey = localStorage.getItem('deepseek_api_key');
-        this.baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    }
+<!-- Place this at the bottom of your index.html, just before </body> -->
+<script>
+  // Secure API Integration
+  class SecureAIProvider {
+      constructor() {
+          this.apiKey = localStorage.getItem('deepseek_api_key');
+          this.baseUrl = 'https://api.deepseek.com/v1/chat/completions';
+      }
 
-    async enhancePromptWithAI(originalPrompt) {
-        if (!this.apiKey) {
-            this.showApiKeyPrompt();
-            return null;
-        }
+      async enhancePromptWithAI(originalPrompt) {
+          if (!this.apiKey) {
+              this.showApiKeyPrompt();
+              return null;
+          }
 
-        try {
-            const response = await fetch(this.baseUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'deepseek-chat',
-                    messages: [
-                        { role: 'system', content: 'You are an expert prompt engineer. Enhance and optimize prompts for maximum AI performance.' },
-                        { role: 'user', content: `Enhance this prompt: ${originalPrompt}` }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 1000
-                })
-            });
+          try {
+              const response = await fetch(this.baseUrl, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${this.apiKey}`
+                  },
+                  body: JSON.stringify({
+                      model: 'deepseek-chat',
+                      messages: [
+                          { role: 'system', content: 'You are an expert prompt engineer. Enhance and optimize prompts for maximum AI performance.' },
+                          { role: 'user', content: `Enhance this prompt: ${originalPrompt}` }
+                      ],
+                      temperature: 0.7,
+                      max_tokens: 1000
+                  })
+              });
 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
 
-            const data = await response.json();
-            return data.choices[0].message.content;
-        } catch (error) {
-            console.error('DeepSeek API Error:', error);
-            alert('API Error. Please check your key or try again later.');
-            return null;
-        }
-    }
+              const data = await response.json();
+              return data.choices[0].message.content;
+          } catch (error) {
+              console.error('DeepSeek API Error:', error);
+              alert('API Error. Please check your key or try again later.');
+              return null;
+          }
+      }
 
-    showApiKeyPrompt() {
-        const apiKey = prompt('Enter your DeepSeek API key (stored only in your browser):');
-        if (apiKey) {
-            localStorage.setItem('deepseek_api_key', apiKey);
-            this.apiKey = apiKey;
-            alert('API key saved! Try generating prompts again.');
-        }
-    }
+      showApiKeyPrompt() {
+          const apiKey = prompt('Enter your DeepSeek API key (stored locally only):');
+          if (apiKey) {
+              localStorage.setItem('deepseek_api_key', apiKey);
+              this.apiKey = apiKey;
+              alert('API key saved! Try generating prompts again.');
+          }
+      }
 
-    clearApiKey() {
-        localStorage.removeItem('deepseek_api_key');
-        this.apiKey = null;
-        alert('API key cleared!');
-    }
-}
+      clearApiKey() {
+          localStorage.removeItem('deepseek_api_key');
+          this.apiKey = null;
+          alert('API key cleared!');
+      }
+  }
 
-const aiProvider = new SecureAIProvider();
+  const aiProvider = new SecureAIProvider();
+  window.aiProvider = aiProvider;
+</script>
+
