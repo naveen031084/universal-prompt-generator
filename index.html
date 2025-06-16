@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universal AI Prompt Generator</title>
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiVW5pdmVyc2FsIEFJIFByb21wdCBHZW5lcmF0b3IiLCJzaG9ydF9uYW1lIjoiUHJvbXB0R2VuIiwiZGVzY3JpcHRpb24iOiJJbnRlbGxpZ2VudCBwcm9tcHQgZ2VuZXJhdG9yIGZvciBBSSB0b29scyIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMGYxNDI5IiwidGhlbWVfY29sb3IiOiIjM2Y4MWZmIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1USTRJaUJvWldsbmFIUTlJakV5T0NJZ2RtbGxkMEp2ZUQwaU1DQXdJREV5T0NBeE1qZ2lJSGh0Ykc1elBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SWdabWxzYkQwaWl6UTRPRFlpUGp4d1lYUm9JR1E5SWsweE5qZ3VPVEVnTXpReE16azVMall6SXpBME1ETXVNVGd4SURVd01TNHhOalFnTlRBeE1pNDNPRGtnTlRZeExqUXpNaU0yTVRnek1pNDFOVEVnTlRZdU1UZ3pJRFkyTnk0ME5UZ2dNelF4T1M0MU1qTXRNakU1TGpJNE5TQTNNamt1TXpOak5pNDBOREV0TkRrM0xqTTBNU0F4TmpneUxqa3RObUU0TGpjMElqOCtQQzl6ZG1jKyIsInNpemVzIjoiMTI4eDEyOCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <link rel="manifest" href="manifest.json"
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbD0iIzQ4ODZiIj48cGF0aCBkPSJNMTY4LjkxIDM0MTM5OS42M0M0MDMuMTgxIDUwMS4xNjQgNTAxMi43ODkgNTYxLjQzMkM2MTgzMi41NTEgNTYuMTgzIDY2Ny40NTggMzQxOS41MjMtMjE5LjI4NSA3MjkuMzNjNi40NDE0OTcuMzQxIDE2ODIuOS02YTguNzQiLz48L3N2Zz4=">
     <meta name="theme-color" content="#3f81ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -780,8 +780,10 @@ Use a ${tone} tone throughout and ensure each section is detailed and valuable. 
 
         // Service Worker for PWA
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZXZlbnQgPT4gewogIGV2ZW50LndhaXRVbnRpbCgKICAgIGNhY2hlcy5vcGVuKCdhaS1wcm9tcHQtZ2VuLXYxJykudGhlbihjYWNoZSA9PiB7CiAgICAgIHJldHVybiBjYWNoZS5hZGRBbGwoW10pOwogICAgfSkKICApOwp9KTs=');
-        }
+    navigator.serviceWorker.register('./sw.js')
+        .then(registration => console.log('SW registered:', registration))
+        .catch(error => console.log('SW registration failed:', error));
+}
     </script>
 
     <style>
