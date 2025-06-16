@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal AI Prompt Generator</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiVW5pdmVyc2FsIEFJIFByb21wdCBHZW5lcmF0b3IiLCJzaG9ydF9uYW1lIjoiUHJvbXB0R2VuIiwiZGVzY3JpcHRpb24iOiJJbnRlbGxpZ2VudCBwcm9tcHQgZ2VuZXJhdG9yIGZvciBBSSB0b29scyIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMGYxNDI5IiwidGhlbWVfY29sb3IiOiIjM2Y4MWZmIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1USTRJaUJvWldsbmFIUTlJakV5T0NJZ2RtbGxkMEp2ZUQwaU1DQXdJREV5T0NBeE1qZ2lJSGh0Ykc1elBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SWdabWxzYkQwaWl6UTRPRFlpUGp4d1lYUm9JR1E5SWsweE5qZ3VPVEVnTXpReE16azVMall6SXpBME1ETXVNVGd4SURVd01TNHhOalFnTlRBeE1pNDNPRGtnTlRZeExqUXpNaU0yTVRnek1pNDFOVEVnTlRZdU1UZ3pJRFkyTnk0ME5UZ2dNelF4T1M0MU1qTXRNakU1TGpJNE5TQTNNamt1TXpOak5pNDBOREV0TkRrM0xqTTBNU0F4TmpneUxqa3RObUU0TGpjMElqOCtQQzl6ZG1jKyIsInNpemVzIjoiMTI4eDEyOCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbD0iIzQ4ODZiIj48cGF0aCBkPSJNMTY4LjkxIDM0MTM5OS42M0M0MDMuMTgxIDUwMS4xNjQgNTAxMi43ODkgNTYxLjQzMkM2MTgzMi41NTEgNTYuMTgzIDY2Ny40NTggMzQxOS41MjMtMjE5LjI4NSA3MjkuMzNjNi40NDE0OTcuMzQxIDE2ODIuOS02YTguNzQiLz48L3N2Zz4=">
+    <meta name="theme-color" content="#3f81ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #2d3748 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #3f81ff, #8b5cf6, #06d6a0);
+            border-radius: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scaleX(1); }
+            50% { opacity: 0.7; transform: translateX(-50%) scaleX(1.1); }
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #3f81ff, #8b5cf6, #06d6a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-section, .output-section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .input-section:hover, .output-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.4);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #f1f5f9;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(71, 85, 105, 0.5);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            color: #e2e8f0;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3f81ff;
+            box-shadow: 0 0 0 3px rgba(63, 129, 255, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3f81ff, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(63, 129, 255, 0.4);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .output-area {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(71, 85, 105, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 400px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            color: #e2e8f0;
+        }
+
+        .prompt-options {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .prompt-option {
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(71, 85, 105, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .prompt-option:hover {
+            border-color: #3f81ff;
+            background: rgba(63, 129, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .prompt-option h4 {
+            color: #3f81ff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .prompt-option p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3f81ff;
+            font-style: italic;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #3f81ff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .copy-btn {
+            background: rgba(6, 214, 160, 0.2);
+            border: 1px solid #06d6a0;
+            color: #06d6a0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(6, 214, 160, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .examples {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 12px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .examples h3 {
+            color: #8b5cf6;
+            margin-bottom: 15px;
+        }
+
+        .example-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-item:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .input-section, .output-section {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(63, 129, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"></div>
+    
+            <div class="container">
+        <div class="header">
+            <h1>Universal AI Prompt Generator</h1>
+            <p class="subtitle">Transform your ideas into powerful, optimized prompts for any AI tool</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">🎯 Describe Your Goal</h2>
+                
+                <div class="form-group">
+                    <label for="userGoal">What do you want to achieve?</label>
+                    <textarea id="userGoal" placeholder="E.g., Write a compelling product description for my eco-friendly water bottle..." maxlength="1000"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskType">Task Category</label>
+                    <select id="taskType">
+                        <option value="auto">🤖 Auto-detect (Recommended)</option>
+                        <option value="writing">✍️ Writing & Content Creation</option>
+                        <option value="analysis">📊 Analysis & Research</option>
+                        <option value="creative">🎨 Creative & Brainstorming</option>
+                        <option value="coding">💻 Programming & Technical</option>
+                        <option value="business">💼 Business & Strategy</option>
+                        <option value="education">📚 Learning & Education</option>
+                        <option value="summary">📝 Summarization</option>
+                        <option value="problem-solving">🔧 Problem Solving</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="context">Additional Context (Optional)</label>
+                    <textarea id="context" placeholder="Target audience, tone, specific requirements, constraints..." maxlength="500"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="outputFormat">Preferred Output Format</label>
+                    <select id="outputFormat">
+                        <option value="auto">🎯 Let AI decide</option>
+                        <option value="structured">📋 Structured (lists, headings)</option>
+                        <option value="paragraph">📄 Paragraph form</option>
+                        <option value="steps">🔢 Step-by-step</option>
+                        <option value="creative">🌟 Creative format</option>
+                        <option value="professional">💼 Professional report</option>
+                        <option value="casual">💬 Conversational</option>
+                    </select>
+                </div>
+
+                <button class="btn-primary" onclick="generatePrompts()">
+                    Generate Intelligent Prompts
+                </button>
+
+                <div class="examples">
+                    <h3>💡 Quick Examples</h3>
+                    <div class="example-item" onclick="fillExample('marketing')">
+                        "Create social media content for my startup"
+                    </div>
+                    <div class="example-item" onclick="fillExample('research')">
+                        "Help me understand quantum computing basics"
+                    </div>
+                    <div class="example-item" onclick="fillExample('coding')">
+                        "Build a Python script to analyze CSV data"
+                    </div>
+                    <div class="example-item" onclick="fillExample('creative')">
+                        "Write a short story about time travel"
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h2 class="section-title">🚀 Generated Prompts</h2>
+                <div id="outputArea" class="output-area">
+                    Your optimized prompts will appear here...
+                    
+                    Start by describing what you want to achieve on the left. The AI will analyze your goal and generate multiple high-quality prompt variations tailored for maximum effectiveness.
+                </div>
+                
+                <div id="promptOptions" class="prompt-options" style="display: none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- API Configuration Modal -->
+        <div id="apiModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>🔧 API Configuration</h3>
+                <p>To use AI-powered prompt generation, configure your API:</p>
+                <div class="form-group">
+                    <label for="apiProvider">AI Provider</label>
+                    <select id="apiProvider">
+                        <option value="deepseek">DeepSeek V3</option>
+                        <option value="openai">OpenAI GPT</option>
+                        <option value="anthropic">Anthropic Claude</option>
+                        <option value="local">Local Processing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="apiKey">API Key (stored locally)</label>
+                    <input type="password" id="apiKey" placeholder="sk-...">
+                </div>
+                <button onclick="saveApiConfig()">Save Configuration</button>
+                <button onclick="closeModal()">Use Local Processing</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prompt Engineering Intelligence
+        const PromptEngineering = {
+            // Task type detection patterns
+            taskPatterns: {
+                writing: /write|blog|article|content|copy|email|letter|story|essay|script/i,
+                analysis: /analyze|research|study|compare|evaluate|assess|investigate|examine/i,
+                creative: /creative|brainstorm|idea|design|invent|imagine|art|music|poem/i,
+                coding: /code|program|script|function|api|website|app|software|debug/i,
+                business: /strategy|plan|marketing|sales|revenue|growth|business|startup/i,
+                education: /learn|teach|explain|understand|study|course|lesson|tutorial/i,
+                summary: /summary|summarize|brief|overview|key points|tldr|recap/i,
+                'problem-solving': /solve|fix|troubleshoot|help|issue|problem|challenge/i
+            },
+
+            // Tone detection
+            tonePatterns: {
+                professional: /professional|business|formal|corporate|official/i,
+                casual: /casual|friendly|informal|conversational|relaxed/i,
+                technical: /technical|detailed|precise|specific|expert/i,
+                creative: /creative|engaging|fun|innovative|unique/i,
+                persuasive: /convince|persuade|sell|market|promote/i,
+                educational: /explain|teach|learn|understand|simple|beginner/i
+            },
+
+            // Context analyzers
+            audienceDetection: {
+                'beginners': /beginner|new|start|basic|simple|introduction/i,
+                'professionals': /professional|expert|advanced|industry|corporate/i,
+                'students': /student|school|university|academic|homework/i,
+                'general': /everyone|general|public|audience/i
+            },
+
+            detectTaskType(text) {
+                for (const [type, pattern] of Object.entries(this.taskPatterns)) {
+                    if (pattern.test(text)) return type;
+                }
+                return 'auto';
+            },
+
+            detectTone(text) {
+                const scores = {};
+                for (const [tone, pattern] of Object.entries(this.tonePatterns)) {
+                    scores[tone] = (text.match(pattern) || []).length;
+                }
+                return Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b) || 'professional';
+            },
+
+            detectAudience(text) {
+                for (const [audience, pattern] of Object.entries(this.audienceDetection)) {
+                    if (pattern.test(text)) return audience;
+                }
+                return 'general';
+            },
+
+            generatePromptVariations(goal, taskType, context, outputFormat) {
+                const detectedTask = taskType === 'auto' ? this.detectTaskType(goal) : taskType;
+                const tone = this.detectTone(goal + ' ' + context);
+                const audience = this.detectAudience(goal + ' ' + context);
+
+                const variations = [];
+
+                // Base optimized prompt
+                const basePrompt = this.createBasePrompt(goal, detectedTask, context, tone, audience, outputFormat);
+                variations.push({
+                    title: '🎯 Optimized Primary Prompt',
+                    description: 'Enhanced version with role-playing, context, and clear instructions',
+                    prompt: basePrompt,
+                    reasoning: `Detected task: ${detectedTask}, Tone: ${tone}, Audience: ${audience}`
+                });
+
+                // Chain-of-thought variation
+                if (['analysis', 'problem-solving', 'coding', 'business'].includes(detectedTask)) {
+                    variations.push({
+                        title: '🧠 Chain-of-Thought Approach',
+                        description: 'Step-by-step reasoning for complex tasks',
+                        prompt: this.createChainOfThoughtPrompt(goal, context, tone),
+                        reasoning: 'Uses step-by-step reasoning for better complex problem solving'
+                    });
+                }
+
+                // Few-shot learning variation
+                variations.push({
+                    title: '📚 Few-Shot Learning Version',
+                    description: 'Includes examples for better understanding',
+                    prompt: this.createFewShotPrompt(goal, detectedTask, context, tone),
+                    reasoning: 'Provides examples to guide AI behavior and output quality'
+                });
+
+                // Structured output variation
+                if (outputFormat === 'auto' || outputFormat === 'structured') {
+                    variations.push({
+                        title: '📋 Structured Output Format',
+                        description: 'Formatted with clear sections and organization',
+                        prompt: this.createStructuredPrompt(goal, detectedTask, context, tone),
+                        reasoning: 'Ensures organized, scannable output with clear structure'
+                    });
+                }
+
+                return variations;
+            },
+
+            createBasePrompt(goal, taskType, context, tone, audience, outputFormat) {
+                const roleMap = {
+                    writing: 'expert content writer and copywriter',
+                    analysis: 'senior research analyst and data expert',
+                    creative: 'creative director and innovation consultant',
+                    coding: 'senior software engineer and architect',
+                    business: 'business strategy consultant and advisor',
+                    education: 'educational specialist and curriculum designer',
+                    summary: 'information synthesis expert',
+                    'problem-solving': 'solution architect and problem-solving expert'
+                };
+
+                const role = roleMap[taskType] || 'knowledgeable assistant';
+                const contextSection = context ? `\n\nContext: ${context}` : '';
+                const audienceSection = audience !== 'general' ? `\nTarget audience: ${audience}` : '';
+                
+                return `Act as a ${role} with deep expertise in your field.
+
+Task: ${goal}${contextSection}${audienceSection}
+
+Requirements:
+- Use a ${tone} tone throughout your response
+- Provide actionable, high-quality output
+- Be specific and detailed where appropriate
+- Consider best practices in your field
+${outputFormat !== 'auto' ? `- Format your response as: ${outputFormat}` : ''}
+
+Please deliver your best work, thinking through the problem carefully before responding.`;
+            },
+
+            createChainOfThoughtPrompt(goal, context, tone) {
+                return `I need you to work through this step-by-step, showing your reasoning process.
+
+Task: ${goal}
+${context ? `Context: ${context}` : ''}
+
+Please approach this by:
+1. First, breaking down what exactly needs to be accomplished
+2. Identifying the key factors and considerations
+3. Working through your reasoning step-by-step
+4. Arriving at your final response
+
+Use a ${tone} tone and show your thinking process clearly. Walk me through each step of your analysis before providing your final answer.`;
+            },
+
+            createFewShotPrompt(goal, taskType, context, tone) {
+                const exampleMap = {
+                    writing: 'Here\'s an example of excellent content:\n[Example would be here]\n\nNow create similar high-quality content for:',
+                    analysis: 'Here\'s how to approach analysis:\n1. Gather data\n2. Identify patterns\n3. Draw insights\n\nNow analyze:',
+                    creative: 'Here are examples of creative approaches:\n- Approach 1: [Example]\n- Approach 2: [Example]\n\nNow be creative with:',
+                    coding: 'Here\'s an example of well-structured code:\n```\n[Code example]\n```\n\nNow create code for:',
+                    business: 'Here\'s a strong business approach:\n- Strategy: [Example]\n- Tactics: [Example]\n\nNow develop a business solution for:'
+                };
+
+                const example = exampleMap[taskType] || 'Here are some examples of excellent work:\n[Examples would be provided]\n\nNow apply this quality to:';
+                
+                return `${example}
+
+${goal}
+
+${context ? `Additional context: ${context}` : ''}
+
+Please match or exceed the quality and approach shown in the examples above. Use a ${tone} tone and provide comprehensive, actionable output.`;
+            },
+
+            createStructuredPrompt(goal, taskType, context, tone) {
+                return `Please provide a comprehensive, well-structured response to the following:
+
+## Task
+${goal}
+
+${context ? `## Context\n${context}` : ''}
+
+## Required Output Structure
+Please organize your response with clear headings and sections:
+
+1. **Overview/Summary**
+2. **Key Points/Main Content**
+3. **Actionable Steps/Recommendations**
+4. **Additional Considerations**
+5. **Conclusion/Next Steps**
+
+Use a ${tone} tone throughout and ensure each section is detailed and valuable. Format with markdown headers, bullet points, and clear organization for easy reading and reference.`;
+            }
+        };
+
+        // UI Functions
+        function generatePrompts() {
+            const goal = document.getElementById('userGoal').value.trim();
+            const taskType = document.getElementById('taskType').value;
+            const context = document.getElementById('context').value.trim();
+            const outputFormat = document.getElementById('outputFormat').value;
+
+            if (!goal) {
+                alert('Please describe your goal first!');
+                return;
+            }
+
+            const outputArea = document.getElementById('outputArea');
+            const optionsArea = document.getElementById('promptOptions');
+
+            // Show loading
+            outputArea.innerHTML = '<div class="loading">Generating intelligent prompts...</div>';
+            optionsArea.style.display = 'none';
+
+            // Simulate processing time for better UX
+            setTimeout(() => {
+                const variations = PromptEngineering.generatePromptVariations(goal, taskType, context, outputFormat);
+                displayPromptVariations(variations);
+            }, 1500);
+        }
+
+        function displayPromptVariations(variations) {
+            const outputArea = document.getElementById('outputArea');
+            const optionsArea = document.getElementById('promptOptions');
+
+            // Show the first (best) prompt in main area
+            outputArea.innerHTML = variations[0].prompt;
+
+            // Show all variations as options
+            optionsArea.innerHTML = variations.map((variation, index) => `
+                <div class="prompt-option" onclick="selectPrompt(${index})">
+                    <h4>${variation.title}</h4>
+                    <p>${variation.description}</p>
+                    <small style="color: #64748b; font-style: italic;">${variation.reasoning}</small>
+                </div>
+            `).join('');
+
+            optionsArea.style.display = 'grid';
+
+            // Store variations globally for selection
+            window.currentVariations = variations;
+
+            // Add copy button
+            addCopyButton();
+        }
+
+        function selectPrompt(index) {
+            const variation = window.currentVariations[index];
+            document.getElementById('outputArea').innerHTML = variation.prompt;
+            addCopyButton();
+        }
+
+        function addCopyButton() {
+            const outputArea = document.getElementById('outputArea');
+            const existingBtn = outputArea.querySelector('.copy-btn');
+            if (existingBtn) existingBtn.remove();
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = '📋 Copy Prompt';
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(outputArea.textContent.replace('📋 Copy Prompt', '').trim());
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => copyBtn.textContent = '📋 Copy Prompt', 2000);
+            };
+            outputArea.appendChild(copyBtn);
+        }
+
+        function fillExample(type) {
+            const examples = {
+                marketing: {
+                    goal: "Create engaging social media content for my sustainable fashion startup targeting Gen Z consumers",
+                    context: "Brand values: eco-friendly, affordable, stylish. Launch campaign for summer collection.",
+                    taskType: "writing"
+                },
+                research: {
+                    goal: "Explain quantum computing in simple terms and its practical applications",
+                    context: "Audience: business executives with no technical background. Focus on business implications.",
+                    taskType: "education"
+                },
+                coding: {
+                    goal: "Build a Python script that analyzes customer data from CSV files and generates insights",
+                    context: "Need to handle missing data, create visualizations, and export reports. For e-commerce business.",
+                    taskType: "coding"
+                },
+                creative: {
+                    goal: "Write an engaging short story about a time traveler who accidentally changes history",
+                    context: "Target audience: young adults. Genre: sci-fi with humor. Length: 1000-1500 words.",
+                    taskType: "creative"
+                }
+            };
+
+            const example = examples[type];
+            document.getElementById('userGoal').value = example.goal;
+            document.getElementById('context').value = example.context;
+            document.getElementById('taskType').value = example.taskType;
+        }
+
+        // Floating particles animation
+        function createParticles() {
+            const container = document.querySelector('.floating-particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            createParticles();
+            
+            // PWA install prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                deferredPrompt = e;
+                // Could add install button here
+            });
+        });
+
+        // API Configuration (for future use)
+        function saveApiConfig() {
+            const provider = document.getElementById('apiProvider').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            if (apiKey) {
+                localStorage.setItem('aiPromptGen_provider', provider);
+                localStorage.setItem('aiPromptGen_apiKey', apiKey);
+                alert('API configuration saved locally!');
+            }
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('apiModal').style.display = 'none';
+        }
+
+        // Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZXZlbnQgPT4gewogIGV2ZW50LndhaXRVbnRpbCgKICAgIGNhY2hlcy5vcGVuKCdhaS1wcm9tcHQtZ2VuLXYxJykudGhlbihjYWNoZSA9PiB7CiAgICAgIHJldHVybiBjYWNoZS5hZGRBbGwoW10pOwogICAgfSkKICApOwp9KTs=');
+        }
+    </script>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            color: #3f81ff;
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #3f81ff;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+    </style>
+</body>
+</html>
